@@ -62,7 +62,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="mt-12 text-sm text-gray-500 text-center">
-        Built by Jude Truong — Laurier ClubFinder Prototype © 2025
+        justin has such a fat ass
       </footer>
     </main>
   );
