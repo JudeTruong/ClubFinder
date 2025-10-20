@@ -13,7 +13,7 @@ export default async function EventsPage() {
     <main className="min-h-screen bg-gray-50 text-gray-800 p-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
 
-      {events.length === 0 ? (
+      {events.length === 0 ? ( 
         <p>No events yet.</p>
       ) : (
         <ul className="space-y-4 w-full max-w-2xl">

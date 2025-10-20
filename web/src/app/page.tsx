@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-export default function Home() {
+import { PrismaClient } from "@prisma/client";
+ {/* importing database client*/}
+const prisma = new PrismaClient();
+
+export default async function Home() {
+  const users= await prisma.user.findMany();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 text-gray-800 p-8">
       
@@ -59,6 +64,24 @@ export default function Home() {
           </p>
         </Link>
       </div>
+
+      {/* test block to display database info */}
+      <footer className="mt-12 text-sm text-gray-500 text-center">
+        {users.map((user) => (
+        <li
+          key={user.id}
+          className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+          >
+          <h2 className="text-lg font-semibold">{user.name}</h2>
+        <p>{user.email}</p>
+        <p>{user.role}</p>
+        </li>
+      ))}
+      </footer>
+      
+
+      
+
 
       {/* FOOTER */}
       <footer className="mt-12 text-sm text-gray-500 text-center">
