@@ -63,6 +63,29 @@ export default async function Home() {
             See what’s happening soon and join in!
           </p>
         </Link>
+     
+
+        {/* Login  */}
+        <Link
+          href="/signup"
+          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition"
+        >
+          <h2 className="text-2xl font-bold mb-2 text-green-600">Login Page</h2>
+          <p className="text-gray-600">
+            See what’s happening soon and join in!
+          </p>
+        </Link>
+        {/* Login  */}
+        <Link
+          href="/signup"
+          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition"
+        >
+          <h2 className="text-2xl font-bold mb-2 text-green-600">Sign Up Page</h2>
+          <p className="text-gray-600">
+            See what’s happening soon and join in!
+          </p>
+        </Link>
+      
       </div>
 
       {/* test block to display database info */}
