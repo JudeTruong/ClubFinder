@@ -1,62 +1,59 @@
-// --- DATABASE CONNECTION ---
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL") // reads from your .env filessss
-}
-
-// --- PRISMA CLIENT ---
 generator client {
   provider = "prisma-client-js"
 }
 
-// --- TABLES ---
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 model User {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String        @unique
-  password     String
-  role         String        // "student" | "organizer" | "admin"
-  interests    String?
-  memberships  Membership[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  role          String
+  interests     String?
+  memberships   Membership[]
   registrations Registration[]
 }
 
 model Club {
-  id            Int           @id @default(autoincrement())
-  name          String
-  description   String
-  category      String
-  contactEmail  String?
-  events        Event[]
-  memberships   Membership[]
+  id           Int          @id @default(autoincrement())
+  name         String
+  description  String
+  category     String
+  contactEmail String?
+  events       Event[]
+  memberships  Membership[]
 }
 
 model Event {
-  id            Int           @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   title         String
   date          DateTime
   location      String
   description   String
   imageUrl      String?
-  club          Club          @relation(fields: [clubId], references: [id])
   clubId        Int
+  club          Club           @relation(fields: [clubId], references: [id])
   registrations Registration[]
 }
 
 model Registration {
-  id        Int    @id @default(autoincrement())
-  user      User   @relation(fields: [userId], references: [id])
-  userId    Int
-  event     Event  @relation(fields: [eventId], references: [id])
-  eventId   Int
-  status    String @default("registered")
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  eventId Int
+  status  String @default("registered")
+  event   Event  @relation(fields: [eventId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model Membership {
-  id        Int    @id @default(autoincrement())
-  user      User   @relation(fields: [userId], references: [id])
-  userId    Int
-  club      Club   @relation(fields: [clubId], references: [id])
-  clubId    Int
-  role      String @default("member")
+  id     Int    @id @default(autoincrement())
+  userId Int
+  clubId Int
+  role   String @default("member")
+  club   Club   @relation(fields: [clubId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
