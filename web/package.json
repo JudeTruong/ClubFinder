@@ -11,6 +11,8 @@
   "dependencies": {
     "@fullcalendar/daygrid": "^6.1.19",
     "@fullcalendar/react": "^6.1.19",
+    "@prisma/client": "^6.17.1",
+    "better-sqlite3": "^12.4.1",
     "mysql2": "^3.15.2",
     "next": "15.5.5",
     "react": "19.1.0",
@@ -24,8 +26,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
+    "prisma": "^6.17.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
-  
 }
+
+

@@ -57,3 +57,4 @@ model Membership {
   club   Club   @relation(fields: [clubId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
 }
+
