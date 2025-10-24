@@ -63,7 +63,16 @@ export default async function Home() {
             See what’s happening soon and join in!
           </p>
         </Link>
-     
+
+        {/* Login card */}
+        <Link
+        href="/login"
+        className="block w-full rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-400 transition">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-green-600">Login Page</h2>
+            <p className="text-gray-600 mt-2 text-sm">Log in with your Student ID.</p>
+            </div>
+            </Link>
 
         {/* Login  */}
         <Link
