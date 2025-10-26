@@ -1,0 +1,74 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [studentId, setStudentId] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setMsg(null);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMsg(typeof data?.error === "string" ? data.error : "Login failed");
+        return;
+      }
+      router.push("/clubHome"); // change if you want
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div style={{ maxWidth: 360, margin: "48px auto", fontFamily: "system-ui" }}>
+      <h1 style={{ fontSize: 24, marginBottom: 16 }}>Sign in</h1>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
+        <label>
+          Student ID (9 digits)
+          <input
+            required
+            inputMode="numeric"
+            pattern="\d{9}"
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            placeholder="123456789"
+            style={{ width: "100%", padding: 8, borderRadius: 8 }}
+          />
+        </label>
+
+        <label>
+          Password
+          <input
+            required
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "100%", padding: 8, borderRadius: 8 }}
+          />
+        </label>
+
+        <button type="submit" disabled={loading} style={{ padding: 10, borderRadius: 8 }}>
+          {loading ? "Signing in..." : "Sign in"}
+        </button>
+
+        {msg && <p style={{ color: "crimson" }}>{msg}</p>}
+      </form>
+
+      <p style={{ marginTop: 16 }}>
+        No account? <a href="/auth/signup" style={{ textDecoration: "underline" }}>Create one</a>
+      </p>
+    </div>
+  );
+}
