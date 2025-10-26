@@ -10,13 +10,14 @@ datasource db {
 model User {
   id            Int            @id @default(autoincrement())
   name          String
-  email         String         @unique
+  email         String         
   password      String
-  role          String
+  role          String          
   interests     String?
   memberships   Membership[]
   registrations Registration[]
 }
+
 
 model Club {
   id           Int          @id @default(autoincrement())
@@ -57,4 +58,3 @@ model Membership {
   club   Club   @relation(fields: [clubId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
 }
-

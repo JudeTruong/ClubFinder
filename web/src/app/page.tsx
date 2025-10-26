@@ -53,6 +53,20 @@ export default async function Home() {
           </p>
         </Link>
 
+        
+      {/* other cards ... */}
+
+      
+
+      {/* Signup card */}
+      <Link 
+      href="/auth/signup" 
+      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-yellow-400 transition">
+        <h2 className="text-2xl font-bold mb-2 text-red-600">Sign Up Page</h2>
+        <p className="text-gray-600">Create your account (9-digit student ID).</p>
+      </Link>
+    
+
         {/* Events Card */}
         <Link
           href="/events"
@@ -67,33 +81,19 @@ export default async function Home() {
         {/* Login card */}
         <Link
         href="/login"
-        className="block w-full rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-gray-400 transition">
+        className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition">
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-green-600">Login Page</h2>
-            <p className="text-gray-600 mt-2 text-sm">Log in with your Student ID.</p>
+            <h2 className="text-2xl font-bold text-green-600">Club Login Page</h2>
+            <p className="text-gray-600 mt-2 text-sm">Log in with your email and password.</p>
             </div>
             </Link>
-
-        {/* Login  */}
-        <Link
-          href="/signup"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-green-600">Login Page</h2>
-          <p className="text-gray-600">
-            See what’s happening soon and join in!
-          </p>
-        </Link>
-        {/* Login  */}
-        <Link
-          href="/signup"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-green-600">Sign Up Page</h2>
-          <p className="text-gray-600">
-            See what’s happening soon and join in!
-          </p>
-        </Link>
+            {/* Login card */}
+      <Link 
+      href="/auth/login" 
+      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-orange-400 transition">
+        <h3 className="text-2xl font-semibold text-black-600">Login Page</h3>
+        <p className="text-gray-600">Log in with your student ID and password.</p>
+      </Link>
       
       </div>
 
