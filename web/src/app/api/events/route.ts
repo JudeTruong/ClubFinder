@@ -74,6 +74,8 @@ export async function GET(request: Request) {
     where: { userId },      
     include: { event: true }
   });
+
+  console.log("Registrations for user", userId, registrations);
 //add the events which the user has registered for into an array of events
   const myevents = registrations.map((r) => ({
     title: r.event.title,
