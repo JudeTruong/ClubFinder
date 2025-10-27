@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
     const { studentId, password } = parsed.data;
 
-    const user = await prisma.user.findUnique({ where: { email: studentId } });
+    const user = await prisma.user.findFirst({ where: { email: studentId } });
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
@@ -25,7 +25,10 @@ export async function POST(req: Request) {
     }
 
    // await createSessionCookie({ sid: user.email }); // store studentId in the cookie
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ 
+      message: "Login successful",
+      userId: user.id,
+    });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

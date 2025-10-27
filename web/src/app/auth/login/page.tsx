@@ -25,7 +25,8 @@ export default function LoginPage() {
         setMsg(typeof data?.error === "string" ? data.error : "Login failed");
         return;
       }
-      router.push("/clubHome"); // change if you want
+      localStorage.setItem("userId", data.userId);
+      router.push("/calendar"); // change if you want
     } finally {
       setLoading(false);
     }

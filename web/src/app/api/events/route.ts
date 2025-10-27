@@ -65,8 +65,9 @@ export async function POST(req: NextRequest) {
 const prisma_con = new PrismaClient();
 //function to get events for a specific user
 export async function GET(request: Request) {
-  //test userID
-  const userId = 3; 
+  //pull userID
+  const { searchParams } = new URL(request.url);
+  const userId = Number(searchParams.get("userId"));
 
  //getting their registrations and event information
   const registrations = await prisma_con.registration.findMany({
@@ -75,7 +76,7 @@ export async function GET(request: Request) {
   });
 //add the events which the user has registered for into an array of events
   const myevents = registrations.map((r) => ({
-    title: r.event.title,                          
+    title: r.event.title,
     date: r.event.date.toISOString().split("T")[0]
   }));
 
