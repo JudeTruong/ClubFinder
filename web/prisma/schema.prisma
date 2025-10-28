@@ -39,7 +39,7 @@ model Event {
   clubId        Int
   club          Club           @relation(fields: [clubId], references: [id])
   registrations Registration[]
-  attendees     Int
+  attendees     Int @default(0)
 }
 
 model Registration {
