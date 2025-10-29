@@ -70,11 +70,11 @@ export default async function Home() {
         {/* Events Card */}
         <Link
           href="/events"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition"
+          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-blue-400 transition"
         >
-          <h2 className="text-2xl font-bold mb-2 text-green-600">Events</h2>
+          <h2 className="text-2xl font-bold mb-2 text-blue-600">Club Management Page</h2>
           <p className="text-gray-600">
-            See what’s happening soon and join in!
+            View and add events.
           </p>
         </Link>
 

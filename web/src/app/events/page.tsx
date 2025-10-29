@@ -1,137 +1,109 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
+type EventItem = {
+  id: number;
+  title: string;
+  description?: string | null;
+  date: string | Date;
+  location?: string | null;
+};
 
-export default async function EventsPage() {
-  // Load all events from DB, including their club name
-  const events = await prisma.event.findMany({
-    orderBy: { date: "asc" },
-    include: {
-      club: {
-        select: { name: true },
-      },
-    },
-  });
+export default function ClubManagementPage() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/events/all");
+        if (!res.ok) throw new Error("Failed to load events");
+        const data = await res.json();
+        if (mounted) setEvents(Array.isArray(data) ? data : []);
+      } catch (e) {
+        if (mounted) setEvents([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+        <h1 className="text-2xl font-semibold text-blue-600 mb-4">Club Management</h1>
+        <div className="text-gray-500">Loading events…</div>
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-800 p-8 flex flex-col items-center">
-      {/* header row with title + create button */}
-      <section className="w-full max-w-5xl flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-4xl font-bold text-blue-700">
-            Upcoming Events
-          </h1>
-          <p className="text-gray-600 text-base">
-            Browse events from clubs on campus.
-          </p>
-        </div>
-
+    <div className="min-h-screen bg-white p-6 space-y-6">
+      <div className="flex items-center justify-between">
+      <h1 className="text-2xl font-bold text-blue-600">Club Management</h1>
         <Link
           href="/events/new"
-          className="inline-block bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition text-center"
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-200"
         >
-          Create Event
+          + Create event
         </Link>
-      </section>
-
-      {/* your event cards stay here */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
-        {events.length === 0 ? (
-          <div className="text-gray-500 text-center col-span-full border border-dashed border-gray-300 rounded-xl p-8 bg-white shadow-sm">
-            <p className="font-medium text-lg mb-1">No events yet</p>
-            <p className="text-sm text-gray-500">
-              Be the first to{" "}
-              <Link
-                href="/events/new"
-                className="text-blue-600 underline hover:text-blue-700"
-              >
-                create one
-              </Link>
-              .
-            </p>
-          </div>
-        ) : (
-          events.map((ev) => (
-            <div
-              key={ev.id}
-              className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex flex-col"
-            >
-              <h2 className="text-xl font-semibold text-blue-600">
-                {ev.title ?? "Untitled Event"}
-              </h2>
-
-              <p className="text-sm text-gray-500 mb-2">
-                {ev.date
-                  ? `${new Date(ev.date).toLocaleString()} · ${ev.location ?? "No location"}`
-                  : ev.location ?? "No location"}
-              </p>
-
-              <p className="text-gray-700 mb-3">
-                {ev.description ?? "No description"}
-              </p>
-
-              <p className="text-xs text-gray-500 mt-auto">
-                Club:{" "}
-                {ev.club?.name
-                  ? ev.club.name
-                  : ev.clubId
-                  ? `Club #${ev.clubId}`
-                  : "Unknown club"}
-                {ev.imageUrl ? ` · Image: ${ev.imageUrl}` : ""}
-              </p>
-            </div>
-          ))
-        )}
       </div>
-    </main>
+
+      {events.length === 0 ? (
+        <div className="text-gray-500 text-center col-span-full border border-dashed border-gray-300 rounded-xl p-8 bg-white shadow-sm">
+          <p className="font-medium text-lg mb-1">No events yet</p>
+          <p className="text-sm text-gray-500">
+            Be the first to{" "}
+            <Link
+              href="/events/new"
+              className="text-blue-600 underline hover:text-blue-700"
+            >
+              create one
+            </Link>
+            .
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((ev) => {
+            const dateStr =
+              typeof ev.date === "string"
+                ? new Date(ev.date).toISOString().split("T")[0]
+                : new Date(ev.date).toISOString().split("T")[0];
+
+            return (
+              <div
+                key={ev.id}
+                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
+              >
+                <h2 className="font-semibold text-lg text-blue-600">{ev.title}</h2>
+                {ev.description && (
+                  <p className="text-sm text-gray-600 mt-1 line-clamp-3">
+                    {ev.description}
+                  </p>
+                )}
+                <div className="mt-3 text-sm text-gray-700 space-y-1">
+                  <p>
+                    <span className="font-medium">Date:</span> {dateStr}
+                  </p>
+                  {ev.location && (
+                    <p>
+                      <span className="font-medium">Location:</span>{" "}
+                      {ev.location}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
-
-
-
-
-// src/app/events/page.tsx
-//import { PrismaClient } from "@prisma/client";
-
-//const prisma = new PrismaClient();
-
-//export default async function EventsPage() {
-  // Fetch all events and include their related club info
-  //const events = await prisma.event.findMany({
-   //include: { club: true }, 
-  //});
-
-  //return (
-    //<main className="min-h-screen bg-gray-50 text-gray-800 p-8 flex flex-col items-center">
-      //h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
-
-      //{events.length === 0 ? ( 
-        //<p>No events yet.</p>
-      //) : (
-        //<ul className="space-y-4 w-full max-w-2xl">
-          //{events.map((event) => (
-            //<li
-              //key={event.id}
-              //className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
-            //>
-             //<h2 className="text-xl font-semibold">{event.title}</h2>
-              //<p className="text-gray-600">{event.description}</p>
-              //<p>
-                //<strong>Date:</strong>{" "}
-                //{new Date(event.date).toLocaleDateString()}
-              //</p>
-              //<p>
-                //<strong>Location:</strong> {event.location}
-              //</p>
-              //<p>
-                //<strong>Club:</strong> {event.club?.name}
-              //</p>
-            //</li>
-          //))}
-        //</ul>
-      //)}
-    //</main>
-  //);
-//}
-
