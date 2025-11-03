@@ -56,3 +56,26 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ id: ev.id, ok: true }, { status: 201 });
 }
 
+import { PrismaClient } from "@prisma/client";
+const prisma_con = new PrismaClient();
+//function to get events for a specific user
+export async function GET(request: Request) {
+  //pull userID
+  const { searchParams } = new URL(request.url);
+  const userId = Number(searchParams.get("userId"));
+
+ //getting their registrations and event information
+  const registrations = await prisma_con.registration.findMany({
+    where: { userId },      
+    include: { event: true }
+  });
+
+  console.log("Registrations for user", userId, registrations);
+//add the events which the user has registered for into an array of events
+  const myevents = registrations.map((r) => ({
+    title: r.event.title,
+    date: r.event.date.toISOString().split("T")[0]
+  }));
+
+  return NextResponse.json(myevents);
+}

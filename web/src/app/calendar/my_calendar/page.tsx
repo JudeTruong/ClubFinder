@@ -9,7 +9,7 @@ export default function CalendarPage() {
   const [events, setEvents] = useState([]);
   const [userId, setUserId] = useState<string | null>(null);
 
-  useEffect(() => {
+    useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     if (storedUserId) {
       setUserId(storedUserId);
@@ -18,6 +18,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
       if (!userId) return;
+      let ignore = false;
     // Fetch user's registered events from your API route
     fetch(`/api/events?userId=${userId}`)
       .then(async (res) => {
@@ -25,8 +26,13 @@ export default function CalendarPage() {
         if (!text) throw new Error("Empty response");
         return JSON.parse(text);
       })
-      .then((data) => setEvents(data))
+      .then((data) => {
+        if (!ignore) setEvents(data);
+    })
       .catch((err) => console.error("Error fetching events:", err));
+      return () => {
+      ignore = true;
+    };
   }, [userId]);
     return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-800">
