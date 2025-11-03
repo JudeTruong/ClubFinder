@@ -39,7 +39,7 @@ export default function CalendarPage() {
           eventClick={(info) => {
             // Option A: Navigate to a Next.js route
             router.push(`/events/${info.event.id}`);
-
+     
             // Option B: Open external link (if event has one)
             // window.open(info.event.url, "_blank");
 
