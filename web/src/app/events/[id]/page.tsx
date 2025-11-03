@@ -58,10 +58,10 @@ export default async function EventPage({ params }: { params: { id: string } }) 
 
         {/* Back */}
         <a
-          href="/events"
+          href="/calendar"
           className="inline-block mt-4 text-indigo-600 hover:text-indigo-800 font-medium"
         >
-          ← Back to Events
+          ← Back to Calander
         </a>
       </div>
     </main>
