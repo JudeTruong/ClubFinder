@@ -70,39 +70,21 @@ export default function ClubManagementPage() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((ev) => {
-            const dateStr =
-              typeof ev.date === "string"
-                ? new Date(ev.date).toISOString().split("T")[0]
-                : new Date(ev.date).toISOString().split("T")[0];
-
-            return (
-              <div
-                key={ev.id}
-                className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
-              >
-                <h2 className="font-semibold text-lg text-blue-600">{ev.title}</h2>
-                {ev.description && (
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-3">
-                    {ev.description}
-                  </p>
-                )}
-                <div className="mt-3 text-sm text-gray-700 space-y-1">
-                  <p>
-                    <span className="font-medium">Date:</span> {dateStr}
-                  </p>
-                  {ev.location && (
-                    <p>
-                      <span className="font-medium">Location:</span>{" "}
-                      {ev.location}
-                    </p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {events.map((ev) => (
+        <div
+          key={ev.id}
+          className="border rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
+      >
+      <h2 className="font-semibold text-lg text-blue-600">{ev.title}</h2>
+      {ev.description && (
+        <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+          {ev.description}
+        </p>
+      )}
+    </div>
+  ))}
+</div>
       )}
     </div>
   );
