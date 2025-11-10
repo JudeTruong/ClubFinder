@@ -55,6 +55,14 @@ export default async function EventPage({ params }: { params: { id: string } }) 
             <li key={r.id}>{r.user.name}</li>
           ))}
         </ul>
+        <h3 className="text-xl font-semibold mb-3">
+          Attendees ({event.attendees})
+        </h3>
+        <ul className="list-disc list-inside text-gray-700 mb-6">
+          {event.registrations.map((e) => (
+            <li key={e.id}>{e.user.name}</li>
+          ))}
+        </ul>
 
         {/* Back */}
         <a

@@ -67,9 +67,9 @@ export default async function Home() {
       </Link>
     
 
-        {/* Events Card */}
+        {/* Club Management Card */}
         <Link
-          href="/events"
+          href="/club-management"
           className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-blue-400 transition"
         >
           <h2 className="text-2xl font-bold mb-2 text-blue-600">Club Management Page</h2>
