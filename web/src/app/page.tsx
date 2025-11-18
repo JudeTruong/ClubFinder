@@ -94,7 +94,13 @@ export default async function Home() {
         <h3 className="text-2xl font-semibold text-black-600">Login Page</h3>
         <p className="text-gray-600">Log in with your student ID and password.</p>
       </Link>
-      
+
+      <Link 
+      href="/userCount" 
+      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-orange-400 transition">
+        <h3 className="text-2xl font-semibold text-black-600">Admin Usercount Page</h3>
+        <p className="text-pink-600">For Admins</p>
+      </Link>
       </div>
 
       {/* test block to display database info */}
