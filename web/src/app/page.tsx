@@ -1,130 +1,91 @@
 import Link from "next/link";
-
 import { PrismaClient } from "@prisma/client";
- {/* importing database client*/}
+
 const prisma = new PrismaClient();
 
 export default async function Home() {
-  const users= await prisma.user.findMany();
+  const users = await prisma.user.findMany();
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-gray-100 text-gray-800 p-8">
-      
-      {/* HEADER SECTION */}
-      <h1 className="text-5xl font-extrabold mb-4 text-center text-blue-700">
-        ClubFinder
-      </h1>
-      <p className="text-lg text-gray-600 mb-10 text-center max-w-xl">
-        Discover student clubs, explore upcoming events, and stay connected with your campus community.
-      </p>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-12 flex flex-col items-center">
 
-      {/* NAVIGATION GRID — now includes ClubHome */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl text-center">
-        
-        {/* ClubHome Card */}
-        <Link
-          href="/clubHome"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-purple-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-purple-600">Club Home</h2>
-          <p className="text-gray-600">
-            this is where people browse for clubs
-          </p>
-        </Link>
-
-        {/* Clubs Card */}
-        <Link
-          href="/clubs"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-blue-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-blue-600">Clubs</h2>
-          <p className="text-gray-600">
-            this is the individual club pages
-          </p>
-        </Link>
-
-        {/* Calendar Card */}
-        <Link
-          href="/calendar"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-yellow-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-yellow-600">Calendar</h2>
-          <p className="text-gray-600">
-            View all events across campus in one place.
-          </p>
-        </Link>
-
-        
-      {/* other cards ... */}
-
-      
-
-      {/* Signup card */}
-      <Link 
-      href="/auth/signup" 
-      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-yellow-400 transition">
-        <h2 className="text-2xl font-bold mb-2 text-red-600">Sign Up Page</h2>
-        <p className="text-gray-600">Create your account (9-digit student ID).</p>
-      </Link>
-    
-
-        {/* Club Management Card */}
-        <Link
-          href="/club-management"
-          className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-blue-400 transition"
-        >
-          <h2 className="text-2xl font-bold mb-2 text-blue-600">Club Management Page</h2>
-          <p className="text-gray-600">
-            View and add events.
-          </p>
-        </Link>
-
-        {/* Login card */}
-        <Link
-        href="/login"
-        className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-green-400 transition">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-green-600">Club Login Page</h2>
-            <p className="text-gray-600 mt-2 text-sm">Log in with your email and password.</p>
-            </div>
-            </Link>
-            {/* Login card */}
-      <Link 
-      href="/auth/login" 
-      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-orange-400 transition">
-        <h3 className="text-2xl font-semibold text-black-600">Login Page</h3>
-        <p className="text-gray-600">Log in with your student ID and password.</p>
-      </Link>
-
-      <Link 
-      href="/userCount" 
-      className="p-8 bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 hover:border-orange-400 transition">
-        <h3 className="text-2xl font-semibold text-black-600">Admin Usercount Page</h3>
-        <p className="text-pink-600">For Admins</p>
-      </Link>
+      {/* HEADER */}
+      <div className="text-center mb-14">
+        <h1 className="text-5xl font-extrabold text-gray-900 drop-shadow-sm">
+          ClubFinder
+        </h1>
+        <p className="mt-4 text-lg text-gray-600 max-w-2xl">
+          Discover student clubs, explore events, and stay connected with your campus community.
+        </p>
       </div>
 
-      {/* test block to display database info */}
-      <footer className="mt-12 text-sm text-gray-500 text-center">
-        {users.map((user) => (
-        <li
-          key={user.id}
-          className="border rounded-lg p-4 bg-white shadow hover:shadow-md transition"
+      {/* GRID CONTAINER */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl w-full">
+
+        {/* Card Template */}
+        {[
+          {
+            href: "/clubHome",
+            title: "Club Home",
+            color: "purple",
+            desc: "Browse all student clubs.",
+          },
+          {
+            href: "/calendar",
+            title: "Calendar",
+            color: "yellow",
+            desc: "See all campus events.",
+          },
+          {
+            href: "/auth/signup",
+            title: "Sign Up",
+            color: "red",
+            desc: "Create your student account.",
+          },
+          {
+            href: "/club-management",
+            title: "Club Management",
+            color: "blue",
+            desc: "Post and manage events.",
+          },
+          {
+            href: "/auth/login",
+            title: "Login",
+            color: "orange",
+            desc: "Log in with student ID.",
+          },
+          {
+            href: "/login",
+            title: "Club Login",
+            color: "green",
+            desc: "Login for club executives.",
+          },
+          {
+            href: "/userCount",
+            title: "Admin Usercount",
+            color: "pink",
+            desc: "Admin-only dashboard.",
+          },
+        ].map((item) => (
+          <Link
+            key={item.title}
+            href={item.href}
+            className="p-8 bg-white rounded-2xl shadow-md hover:shadow-xl transition border border-gray-200 hover:border-gray-300"
           >
-          <h2 className="text-lg font-semibold">{user.name}</h2>
-        <p>{user.email}</p>
-        <p>{user.role}</p>
-        </li>
-      ))}
-      </footer>
-      
+            <h2 className={`text-2xl font-bold mb-2 text-${item.color}-600`}>
+              {item.title}
+            </h2>
+            <p className="text-gray-600">{item.desc}</p>
+          </Link>
+        ))}
 
-      
+      </div>
 
+      {/* FOOTER / EXTRA INFO */}
+      <div className="mt-12 text-gray-600 text-sm opacity-80">
+        Total registered users: {users.length}
+      </div>
 
-      {/* FOOTER */}
-      <footer className="mt-12 text-sm text-gray-500 text-center">
-        justin has such a fat ass
-      </footer>
     </main>
   );
 }
