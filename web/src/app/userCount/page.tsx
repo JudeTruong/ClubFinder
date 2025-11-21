@@ -20,6 +20,23 @@ export default async function UserCountPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 p-10">
 
+        {/* Top bar: title (left) + Platform Metrics (right) */}
+        <div className="flex items-start justify-between">
+          <div>
+
+          </div>
+
+          {/* Single black & white action on the top-right */}
+          <Link
+            href="/admin"
+            title="Open Admin Dashboard"
+            className="px-3 py-1.5 rounded-lg border border-black text-black hover:bg-black hover:text-white transition"
+          >
+            Platform Metrics
+          </Link>
+        </div>
+
+
       {/* Top Header */}
       <div className="max-w-6xl mx-auto mb-10">
         <h1 className="text-4xl font-bold text-gray-800">Admin Dashboard</h1>
