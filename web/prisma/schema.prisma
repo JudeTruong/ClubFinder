@@ -16,6 +16,7 @@ model User {
   interests     String?
   memberships   Membership[]
   registrations Registration[]
+  subcriptions Subscriptions[]
 }
 
 
@@ -27,6 +28,7 @@ model Club {
   contactEmail String?
   events       Event[]
   memberships  Membership[]
+  subscriptions Subscriptions[]
 }
 
 model Event {
@@ -58,4 +60,11 @@ model Membership {
   role   String @default("member")
   club   Club   @relation(fields: [clubId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
+}
+model Subscriptions {
+  id Int @id @default(autoincrement())
+  userId Int
+  clubId Int
+  club Club @relation(fields: [clubId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
