@@ -14,10 +14,12 @@
     "@prisma/client": "^6.17.1",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.4.1",
+    "chart.js": "^4.5.1",
     "jose": "^6.1.0",
     "mysql2": "^3.15.2",
     "next": "15.5.5",
     "react": "19.1.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.1.0",
     "zod": "^4.1.12"
   },

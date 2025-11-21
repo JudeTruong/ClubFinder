@@ -1,4 +1,13 @@
+
 import { prisma } from "@/lib/prisma";
+import EventChartClient from "./EventChartClient"; 
+
+import { Bar } from "react-chartjs-2";
+
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+
+// Register the components used by Bar charts
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 export default async function EventPage({ params }: { params: { id: string } }) {
   const event = await prisma.event.findUnique({
@@ -16,6 +25,31 @@ export default async function EventPage({ params }: { params: { id: string } }) 
   if (!event) {
     return <div className="text-center text-gray-500 mt-20">Event not found</div>;
   }
+
+  const registrationCount = event.registrations.length;
+  const attendeeCount = event.attendees ?? 0; // make sure your event model has this field
+
+  const data = {
+    labels: ["Registrations", "Attendees"],
+    datasets: [
+      {
+        label: "Count",
+        data: [registrationCount, attendeeCount],
+        backgroundColor: ["#3B82F6", "#10B981"],
+        borderRadius: 6,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { stepSize: 1 } },
+    },
+  };
 
   return (
     <main className="min-h-screen flex justify-center bg-gray-50 text-gray-800">
@@ -46,24 +80,15 @@ export default async function EventPage({ params }: { params: { id: string } }) 
           {event.description || "No description provided."}
         </p>
 
-        {/* Attendees */}
-        <h2 className="text-xl font-semibold mb-3">
-          Registrations ({event.registrations.length})
-        </h2>
-        <ul className="list-disc list-inside text-gray-700 mb-6">
-          {event.registrations.map((r) => (
-            <li key={r.id}>{r.user.name}</li>
-          ))}
-        </ul>
-        <h3 className="text-xl font-semibold mb-3">
-          Attendees ({event.attendees})
-        </h3>
-        <ul className="list-disc list-inside text-gray-700 mb-6">
-          {event.registrations.map((e) => (
-            <li key={e.id}>{e.user.name}</li>
-          ))}
-        </ul>
+        <h1>{event.title}</h1>
 
+ <p className="text-gray-600 mb-4">Hosted by {event.club?.name}</p>
+      {/* ✅ Pass computed data as props to the client component */}
+      <EventChartClient
+        registrationCount={event.registrations.length}
+        attendeeCount={event.attendees ?? 0}
+      />
+        
         {/* Back */}
         <a
           href="/calendar"
