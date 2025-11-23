@@ -66,7 +66,12 @@ export default async function Home() {
             color: "pink",
             desc: "Admin-only dashboard.",
           },
-
+          {
+            href: "/club_analysis",
+            title: "Club Analysis",
+            color: "pink",
+            desc: "Admin-only dashboard.",
+          },
         ].map((item) => (
           <Link
             key={item.title}
