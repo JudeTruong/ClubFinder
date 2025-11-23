@@ -67,4 +67,6 @@ model Subscriptions {
   clubId Int
   club Club @relation(fields: [clubId], references: [id])
   user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, clubId])
 }
