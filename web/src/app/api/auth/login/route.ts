@@ -1,10 +1,12 @@
 // web/src/app/api/auth/login/route.ts
-import { NextResponse } from "next/server";
+export const runtime = "nodejs";
+
+import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { LoginSchema } from "@/lib/validation";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const parsed = LoginSchema.safeParse(body);
@@ -14,26 +16,24 @@ export async function POST(req: Request) {
 
     const { studentId, password } = parsed.data;
 
+    // You currently store the student ID in the `email` field.
+    // Adjust this lookup if you change your schema later.
     const user = await prisma.user.findFirst({ where: { email: studentId } });
     if (!user) return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
 
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
 
-    // Issue a simple session cookie carrying the user id.
-    // (In production, use a signed token.)
-    const res = NextResponse.json({ message: "Login successful" });
+    // Return the SAME response where we set the cookie.
+    const res = NextResponse.json({ ok: true, userId: user.id });
     res.cookies.set("sid", String(user.id), {
       httpOnly: true,
       sameSite: "lax",
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
-    return NextResponse.json({
-      res,
-      userId: user.id,
-    });
+    return res;
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
