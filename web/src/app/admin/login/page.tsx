@@ -24,7 +24,6 @@ export default function AdminLoginPage() {
         const j = await res.json().catch(() => ({}));
         setError(j?.error ?? "Login failed");
       } else {
-        // redirect to future admin home (adjust later if needed)
         router.push("/admin");
       }
     } finally {
@@ -34,15 +33,11 @@ export default function AdminLoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <form
-        onSubmit={submit}
-        className="w-full max-w-md bg-white rounded-2xl shadow p-8 space-y-6"
-      >
+      <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow p-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold">Admin Login</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Use your admin email and password.
-          </p>
+          {/* 👇 Now black */}
+          <h1 className="text-2xl font-semibold text-black">Admin Login</h1>
+          <p className="text-gray-500 text-sm mt-1">Use your admin email and password.</p>
         </div>
 
         <div className="space-y-4">
@@ -50,7 +45,7 @@ export default function AdminLoginPage() {
             <span className="text-sm text-gray-700">Email</span>
             <input
               type="email"
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
+              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring text-black placeholder-gray-400 autofill:bg-white autofill:text-black"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -62,7 +57,7 @@ export default function AdminLoginPage() {
             <span className="text-sm text-gray-700">Password</span>
             <input
               type="password"
-              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring"
+              className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring text-black placeholder-gray-400 autofill:bg-white autofill:text-black"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
