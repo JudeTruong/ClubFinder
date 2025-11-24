@@ -72,6 +72,12 @@ export default async function Home() {
             color: "pink",
             desc: "Admin-only dashboard.",
           },
+          {
+            href: "/admin/login",
+            title: "Admin Login",
+            color: "purple",
+            desc: "Sign in to analysis & dashboards.",
+          },
         ].map((item) => (
           <Link
             key={item.title}
