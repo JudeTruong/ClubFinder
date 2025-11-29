@@ -8,26 +8,26 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
+  id            Int             @id @default(autoincrement())
   name          String
-  email         String         @unique
+  email         String          @unique
+  studentId     String          @unique
   password      String
-  role          String          
+  role          String
   interests     String?
   memberships   Membership[]
   registrations Registration[]
-  subcriptions Subscriptions[]
+  subcriptions  Subscriptions[]
 }
 
-
 model Club {
-  id           Int          @id @default(autoincrement())
-  name         String
-  description  String
-  category     String
-  contactEmail String?
-  events       Event[]
-  memberships  Membership[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  description   String
+  category      String
+  contactEmail  String?
+  events        Event[]
+  memberships   Membership[]
   subscriptions Subscriptions[]
 }
 
@@ -41,7 +41,7 @@ model Event {
   clubId        Int
   club          Club           @relation(fields: [clubId], references: [id])
   registrations Registration[]
-  attendees     Int @default(0)
+  attendees     Int            @default(0)
 }
 
 model Registration {
@@ -61,12 +61,13 @@ model Membership {
   club   Club   @relation(fields: [clubId], references: [id])
   user   User   @relation(fields: [userId], references: [id])
 }
+
 model Subscriptions {
-  id Int @id @default(autoincrement())
+  id     Int  @id @default(autoincrement())
   userId Int
   clubId Int
-  club Club @relation(fields: [clubId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  club   Club @relation(fields: [clubId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
   @@unique([userId, clubId])
 }

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     // You currently store the student ID in the `email` field.
     // Adjust this lookup if you change your schema later.
-    const user = await prisma.user.findFirst({ where: { email: studentId } });
+    const user = await prisma.user.findUnique({ where: { studentId } });
     if (!user) return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
 
     const ok = await bcrypt.compare(password, user.password);
