@@ -89,7 +89,16 @@ export default function ClubHomePage() {
     <main className="min-h-screen bg-gray-50 text-gray-800">
       <section className="mx-auto max-w-6xl px-4 py-10">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-blue-700 mb-6">Club Directory</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-blue-700">Club Directory</h1>
+
+          <Link
+            href="/create_club"     // ← route you want to go to
+            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition"
+          >
+          + Create Club
+          </Link>
+        </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-4">
