@@ -29,6 +29,7 @@ export default function AdminLoginPage() {
 
       // Success: go back to the home page
       router.push("/");
+      router.refresh();
     } finally {
       setPending(false);
     }
