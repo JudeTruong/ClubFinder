@@ -6,6 +6,11 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { LoginSchema } from "@/lib/validation";
 
+function isBcryptHash(s: string | null | undefined) {
+  // Accept $2a/$2b/$2y prefixes
+  return typeof s === "string" && /^\$2[aby]\$/.test(s);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -16,15 +21,39 @@ export async function POST(req: NextRequest) {
 
     const { studentId, password } = parsed.data;
 
-    // You currently store the student ID in the `email` field.
-    // Adjust this lookup if you change your schema later.
     const user = await prisma.user.findUnique({ where: { studentId } });
-    if (!user) return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    if (!user) {
+      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    let ok = false;
 
-    // Return the SAME response where we set the cookie.
+    if (isBcryptHash(user.password)) {
+      // DB has a bcrypt hash -> use bcrypt compare
+      ok = await bcrypt.compare(password, user.password);
+    } else {
+      // DB has a plain password -> compare directly
+      ok = password === user.password;
+
+      // Optional: auto-upgrade to bcrypt after a successful plain-text match
+      if (ok) {
+        try {
+          const hash = await bcrypt.hash(password, 10);
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { password: hash },
+          });
+        } catch {
+          // If hashing fails, we still allow this login; just don't crash
+        }
+      }
+    }
+
+    if (!ok) {
+      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    }
+
+    // Issue session cookie + response
     const res = NextResponse.json({ ok: true, userId: user.id });
     res.cookies.set("sid", String(user.id), {
       httpOnly: true,
