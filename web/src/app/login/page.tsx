@@ -1,70 +1,84 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [studentId, setStudentId] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
+export default function ClubLoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  async function onSubmit(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setMsg(null);
+    setMessage("");
 
-    const res = await fetch("/api/login", {
+    const res = await fetch("/api/clubs/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentId }),
+      body: JSON.stringify({ email, password }),
     });
 
-    if (res.ok) {
-      setMsg("Logged in!");
-      router.push("/calendar"); // go where you want after login
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setMsg(data?.error || "Login failed");
+    const data = await res.json();
+
+    if (!res.ok) {
+      setMessage(data.error || "Login failed.");
+      setLoading(false);
+      return;
     }
+    localStorage.setItem("userId", data.userId);
+
+    setMessage("Login successful!");
     setLoading(false);
+
+    // Redirect to club dashboard later (ex: /clubHome/${id})
+     setTimeout(() => {
+      window.location.href = "/club-management";
+    }, 700);
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50">
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <form
-        onSubmit={onSubmit}
-        className="w-full max-w-sm bg-white p-6 rounded-2xl shadow space-y-4"
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded-xl shadow-md max-w-sm w-full"
       >
-        <h1 className="text-2xl font-semibold text-center">Club Login</h1>
+        <h1 className="text-2xl font-bold text-blue-700 mb-6 text-center">
+          Club Login
+        </h1>
 
-        <label className="block">
-          <span className="text-sm">Student ID (9 digits)</span>
-          <input
-            className="mt-1 w-full rounded-xl border px-3 py-2 outline-none"
-            value={studentId}
-            onChange={(e) => {
-              // keep only digits, cap at 9
-              const v = e.target.value.replace(/\D/g, "").slice(0, 9);
-              setStudentId(v);
-            }}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="123456789"
-            required
-            pattern="\d{9}"
-            title="Enter 9 digits"
-          />
-        </label>
+        {/* Email */}
+        <input
+          type="email"
+          placeholder="Club contact email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full mb-4 p-2 border rounded-md"
+        />
 
+        {/* Password */}
+        <input
+          type="password"
+          placeholder="Enter club password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className="w-full mb-4 p-2 border rounded-md"
+        />
+
+        {/* Submit */}
         <button
-          disabled={loading || studentId.length !== 9}
-          className="w-full rounded-xl border px-4 py-2 font-medium hover:bg-gray-100 disabled:opacity-60"
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
-          {loading ? "Logging in…" : "Log in"}
+          {loading ? "Logging in..." : "Login"}
         </button>
 
-        {msg && <p className="text-center text-sm text-gray-600">{msg}</p>}
+        {message && (
+          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
+        )}
       </form>
     </main>
   );
