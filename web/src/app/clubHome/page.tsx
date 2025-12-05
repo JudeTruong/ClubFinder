@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-// Helper for friendly event dates
+// Friendly date format
 function fmtDate(d: string | null | undefined) {
   if (!d) return "";
   const dt = new Date(d);
@@ -24,6 +24,18 @@ type SuggestedEvent = {
   date: string | null;
   location?: string | null;
   club?: { id: number; name: string };
+};
+
+// Pastel color map
+const colorMap: Record<string, string> = {
+  violet: "bg-violet-200 border-violet-300 text-violet-900",
+  amber: "bg-amber-200 border-amber-300 text-amber-900",
+  rose: "bg-rose-200 border-rose-300 text-rose-900",
+  blue: "bg-blue-200 border-blue-300 text-blue-900",
+  orange: "bg-orange-200 border-orange-300 text-orange-900",
+  green: "bg-green-200 border-green-300 text-green-900",
+  pink: "bg-pink-200 border-pink-300 text-pink-900",
+  purple: "bg-purple-200 border-purple-300 text-purple-900",
 };
 
 export default function ClubHomePage() {
@@ -86,167 +98,142 @@ export default function ClubHomePage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-800">
-      <section className="mx-auto max-w-6xl px-4 py-10">
-        {/* Title */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-blue-700">Club Directory</h1>
+    <>
+      {/* FULL-PAGE GRADIENT THAT ALWAYS FILLS SCREEN */}
+      <style>{`
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          height: 100% !important;
+          width: 100% !important;
+          background: linear-gradient(135deg, #dee3ff, #f3e8ff, #dae8ff);
+          background-attachment: fixed;
+        }
+      `}</style>
 
-          <Link
-            href="/create_club"     // ← route you want to go to
-            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg shadow hover:bg-blue-700 transition"
-          >
-          + Create Club
+      <main className="min-h-screen w-full">
+
+        {/* NAVBAR */}
+        <nav className="w-full flex justify-end px-10 py-6 gap-4">
+          <Link href="/auth/login" className={`px-5 py-2 rounded-full shadow-sm border font-semibold hover:shadow-lg hover:-translate-y-1 transition ${colorMap.orange}`}>
+            Login
           </Link>
-        </div>
+          <Link href="/auth/signup" className={`px-5 py-2 rounded-full shadow-sm border font-semibold hover:shadow-lg hover:-translate-y-1 transition ${colorMap.rose}`}>
+            Sign Up
+          </Link>
+          <Link href="/login" className={`px-5 py-2 rounded-full shadow-sm border font-semibold hover:shadow-lg hover:-translate-y-1 transition ${colorMap.green}`}>
+            Club Login
+          </Link>
+          <Link href="/admin/login" className={`px-5 py-2 rounded-full shadow-sm border font-semibold hover:shadow-lg hover:-translate-y-1 transition ${colorMap.purple}`}>
+            Admin Login
+          </Link>
+        </nav>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setTab("all")}
-            className={`px-3 py-1.5 rounded-lg border text-sm ${
-              tab === "all"
-                ? "border-blue-700 text-blue-700 bg-blue-50"
-                : "border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            All Clubs
-          </button>
-          <button
-            onClick={() => setTab("my")}
-            className={`px-3 py-1.5 rounded-lg border text-sm ${
-              tab === "my"
-                ? "border-blue-700 text-blue-700 bg-blue-50"
-                : "border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            My Clubs
-          </button>
-        </div>
+        <section className="mx-auto max-w-6xl px-6 py-10">
 
-        {/* Search */}
-        <div className="mb-8">
+          {/* Page Title */}
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-5xl font-extrabold text-violet-900 drop-shadow">
+              Club Directory
+            </h1>
+
+            <Link
+              href="/create_club"
+              className={`px-6 py-2 rounded-full border shadow-sm font-semibold hover:shadow-lg hover:-translate-y-1 transition ${colorMap.blue}`}
+            >
+              + Create Club
+            </Link>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-3 mb-6">
+            {["all", "my"].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t as "all" | "my")}
+                className={`px-6 py-2 rounded-full border font-semibold shadow-sm hover:shadow-md transition ${
+                  tab === t ? colorMap.violet : "bg-white border-gray-300 text-gray-700"
+                }`}
+              >
+                {t === "all" ? "All Clubs" : "My Clubs"}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search clubs..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-600 outline-none"
+            className="w-full rounded-full border border-gray-300 px-5 py-3 mb-8 shadow-sm focus:ring-2 focus:ring-violet-500 outline-none"
           />
-        </div>
 
-        {/* Club List */}
-        {loading ? (
-          <p className="text-gray-500">Loading clubs...</p>
-        ) : isEmpty ? (
-          <p className="text-gray-500 border border-dashed border-gray-300 rounded-xl p-8 bg-white text-center">
-            No clubs found.
-          </p>
-        ) : (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {clubs.map((club) => (
-              <li
-                key={club.id}
-                className="border border-gray-200 rounded-2xl bg-white p-6 shadow-sm hover:shadow-md transition"
-              >
-                <Link href={`/clubHome/${club.id}`} className="block">
-                  <h2 className="font-semibold text-lg text-blue-700 mb-1">
-                    {club.name}
-                  </h2>
-                  {club.description && (
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {club.description}
-                    </p>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Suggested Events */}
-        <div className="mt-14">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Suggested Events
-          </h2>
-
-          {suggestLoading ? (
-            <p className="text-gray-500">Loading suggestions...</p>
-          ) : !suggested || suggested.length === 0 ? (
-            <p className="text-gray-500 border border-dashed border-gray-300 rounded-xl p-6 bg-white text-center">
-              No upcoming suggestions right now.
+          {/* Club List */}
+          {loading ? (
+            <p className="text-gray-600">Loading clubs...</p>
+          ) : isEmpty ? (
+            <p className="text-gray-600 border border-dashed border-gray-400 rounded-xl p-10 bg-white text-center">
+              No clubs found.
             </p>
           ) : (
-            <div className="overflow-x-auto">
-              <ul className="flex gap-4">
-                {suggested.map((e) => (
-                  <li
-                    key={e.id}
-                    className="min-w-[260px] border border-gray-200 rounded-xl p-4 bg-white shadow-sm hover:shadow-md transition"
-                  >
-                    <div className="text-xs text-gray-500 mb-1">
-                      {e.club?.name || "Club"}{" "}
-                      {e.date ? `• ${fmtDate(e.date)}` : ""}
-                    </div>
-                    <h3 className="font-semibold text-blue-700 line-clamp-2">
-                      {e.title}
-                    </h3>
-                    {e.description && (
-                      <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                        {e.description}
+            <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {clubs.map((club) => (
+                <li
+                  key={club.id}
+                  className="bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-2 transition rounded-xl p-8"
+                >
+                  <Link href={`/clubHome/${club.id}`}>
+                    <h2 className="text-xl font-bold text-violet-900 mb-2">
+                      {club.name}
+                    </h2>
+                    {club.description && (
+                      <p className="text-gray-700 text-sm line-clamp-3">
+                        {club.description}
                       </p>
                     )}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           )}
-        </div>
-      </section>
-    </main>
+
+          {/* Suggested Events */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold text-violet-900 mb-4">
+              Suggested Events
+            </h2>
+
+            {suggestLoading ? (
+              <p className="text-gray-600">Loading suggestions...</p>
+            ) : !suggested || suggested.length === 0 ? (
+              <p className="text-gray-600 border border-dashed border-gray-400 rounded-xl p-10 bg-white text-center">
+                No upcoming suggestions right now.
+              </p>
+            ) : (
+              <div className="overflow-x-auto pb-4">
+                <ul className="flex gap-6">
+                  {suggested.map((e) => (
+                    <li
+                      key={e.id}
+                      className="min-w-[260px] bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-2 transition rounded-xl p-6"
+                    >
+                      <div className="text-xs text-gray-500 mb-2">
+                        {e.club?.name || "Club"} • {fmtDate(e.date)}
+                      </div>
+                      <h3 className="font-bold text-violet-900">{e.title}</h3>
+                      {e.description && (
+                        <p className="text-gray-700 text-sm mt-2 line-clamp-3">
+                          {e.description}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
-
-
-//import Link from "next/link";
-//import { prisma } from "@/lib/prisma";
-
-//export default async function ClubHomePage() {
-  // Fetch all clubs
-  //const clubs = await prisma.club.findMany({
-    //orderBy: { name: "asc" },
-    //select: {
-      //id: true,
-      //name: true,
-      //category: true,
-      //description: true,
-      //contactEmail: true,
-    //},
-  //});
-
-  //return (
-    //<main className="min-h-screen bg-gray-50 text-gray-800 p-8 flex flex-col items-center">
-      //<h1 className="text-4xl font-bold text-blue-700 mb-8">Club Directory</h1>
-//
-  //    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-    //    {clubs.map((club) => (
-      //    <Link
-        //    key={club.id}
-          //  href={`/clubHome/${club.id}`}
-            //className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition"
-          //>
-          //  <h2 className="text-xl font-semibold text-blue-600">{club.name}</h2>
-          //  <p className="text-gray-500 text-sm mb-2">{club.category}</p>
-          //  <p className="text-gray-700 text-sm line-clamp-3 mb-4">
-          //    {club.description || "No description provided."}
-          //  </p>
-          //  {club.contactEmail && (
-          //   <p className="text-xs text-gray-500">
-          //      Contact: <span className="underline">{club.contactEmail}</span>
-          //    </p>
-          //  )}
-//          </Link>
-//        ))}
-//      </div>
-//    </main>
-//  );
-//}

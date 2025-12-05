@@ -14,17 +14,20 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
+
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, password }),
       });
+
       const data = await res.json();
       if (!res.ok) {
         setMsg(typeof data?.error === "string" ? data.error : "Signup failed");
         return;
       }
+
       router.push("/auth/login");
     } finally {
       setLoading(false);
@@ -32,43 +35,69 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ maxWidth: 360, margin: "48px auto", fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 24, marginBottom: 16 }}>Create account</h1>
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>
-          Student ID (9 digits)
-          <input
-            required
-            inputMode="numeric"
-            pattern="\d{9}"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
-            placeholder="123456789"
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </label>
+    <>
+      {/* GLOBAL GRADIENT */}
+      <style>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(135deg, #dee3ff, #f3e8ff, #dae8ff);
+          background-attachment: fixed;
+          height: 100%;
+          width: 100%;
+        }
+      `}</style>
 
-        <label>
-          Password (min 8 chars)
-          <input
-            required
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </label>
+      <main className="min-h-screen w-full flex items-center justify-center px-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-sm">
+          <h1 className="text-3xl font-extrabold text-violet-900 mb-6 text-center">
+            Create Account
+          </h1>
 
-        <button type="submit" disabled={loading} style={{ padding: 10, borderRadius: 8 }}>
-          {loading ? "Creating..." : "Create account"}
-        </button>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <label className="text-sm font-semibold text-gray-700">
+              Student ID (9 digits)
+              <input
+                required
+                inputMode="numeric"
+                pattern="\d{9}"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+                placeholder="123456789"
+                className="w-full mt-1 p-3 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-violet-400 outline-none"
+              />
+            </label>
 
-        {msg && <p style={{ color: "crimson" }}>{msg}</p>}
-      </form>
+            <label className="text-sm font-semibold text-gray-700">
+              Password (min 8 characters)
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full mt-1 p-3 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-violet-400 outline-none"
+              />
+            </label>
 
-      <p style={{ marginTop: 16 }}>
-        Already have an account? <a href="/auth/login" style={{ textDecoration: "underline" }}>Sign in</a>
-      </p>
-    </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-violet-300 border border-violet-400 text-violet-900 py-2 rounded-full font-semibold hover:shadow-md hover:-translate-y-1 transition"
+            >
+              {loading ? "Creating..." : "Create Account"}
+            </button>
+
+            {msg && <p className="text-red-600 text-sm text-center">{msg}</p>}
+          </form>
+
+          <p className="mt-4 text-center text-gray-700">
+            Already have an account?{" "}
+            <a href="/auth/login" className="text-violet-700 font-medium underline">
+              Sign in
+            </a>
+          </p>
+        </div>
+      </main>
+    </>
   );
 }

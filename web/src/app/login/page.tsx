@@ -20,66 +20,79 @@ export default function ClubLoginPage() {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       setMessage(data.error || "Login failed.");
       setLoading(false);
       return;
     }
+
     localStorage.setItem("userId", data.userId);
-
     setMessage("Login successful!");
-    setLoading(false);
 
-    // Redirect to club dashboard later (ex: /clubHome/${id})
-     setTimeout(() => {
+    setTimeout(() => {
       window.location.href = "/club-management";
     }, 700);
+
+    setLoading(false);
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded-xl shadow-md max-w-sm w-full"
-      >
-        <h1 className="text-2xl font-bold text-blue-700 mb-6 text-center">
-          Club Login
-        </h1>
+    <>
+      {/* GLOBAL GRADIENT */}
+      <style>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+          background: linear-gradient(135deg, #dee3ff, #f3e8ff, #dae8ff);
+          background-attachment: fixed;
+        }
+      `}</style>
 
-        {/* Email */}
-        <input
-          type="email"
-          placeholder="Club contact email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full mb-4 p-2 border rounded-md"
-        />
-
-        {/* Password */}
-        <input
-          type="password"
-          placeholder="Enter club password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full mb-4 p-2 border rounded-md"
-        />
-
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+      <main className="min-h-screen flex items-center justify-center w-full px-4">
+        <form
+          onSubmit={handleLogin}
+          className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 w-full max-w-sm"
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <h1 className="text-3xl font-extrabold text-violet-900 text-center mb-6">
+            Club Login
+          </h1>
 
-        {message && (
-          <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
-        )}
-      </form>
-    </main>
+          {/* Email */}
+          <input
+            type="email"
+            placeholder="Club contact email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full mb-4 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-violet-400 outline-none"
+          />
+
+          {/* Password */}
+          <input
+            type="password"
+            placeholder="Enter club password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full mb-4 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-violet-400 outline-none"
+          />
+
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-violet-300 border border-violet-400 text-violet-900 py-2 rounded-full font-semibold hover:shadow-md hover:-translate-y-1 transition"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          {message && (
+            <p className="mt-4 text-center text-sm text-gray-800">{message}</p>
+          )}
+        </form>
+      </main>
+    </>
   );
 }

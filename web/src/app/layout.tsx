@@ -38,11 +38,14 @@ export default function RootLayout({
 
         {/* Floating Home Button (kept as you provided it) */}
         <Link
-          href="/"
-          className="fixed bottom-6 left-6 px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-full shadow-sm bg-white/80 backdrop-blur-sm hover:bg-white hover:text-gray-800 transition-all"
-        >
-          Home
-        </Link>
+  href="/"
+  className="z-[9999] fixed bottom-6 left-6 px-4 py-2 text-sm font-medium text-gray-600 
+             border border-gray-300 rounded-full shadow-sm bg-white/80 backdrop-blur-sm 
+             hover:bg-white hover:text-gray-800 transition-all pointer-events-auto"
+>
+  Home
+</Link>
+
       </body>
     </html>
   );

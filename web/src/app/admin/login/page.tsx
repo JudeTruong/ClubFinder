@@ -14,6 +14,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError(null);
     setPending(true);
+
     try {
       const r = await fetch("/api/admin/login", {
         method: "POST",
@@ -27,7 +28,6 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Success: go back to the home page
       router.push("/");
       router.refresh();
     } finally {
@@ -36,49 +36,78 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-      <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow p-8 space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-black">Admin Login</h1>
-          <p className="text-gray-500 text-sm mt-1">Use your admin email and password.</p>
-        </div>
+    <>
+      {/* GLOBAL PASTEL GRADIENT */}
+      <style>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+          background: linear-gradient(135deg, #dee3ff, #f3e8ff, #e5d4ff);
+          background-attachment: fixed;
+        }
+      `}</style>
 
-        <label className="block">
-          <span className="text-sm text-gray-700">Email</span>
-          <input
-            type="email"
-            className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring text-black"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-          />
-        </label>
-
-        <label className="block">
-          <span className="text-sm text-gray-700">Password</span>
-          <input
-            type="password"
-            className="mt-1 w-full rounded-xl border px-3 py-2 outline-none focus:ring text-black"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-          />
-        </label>
-
-        {error && <p className="text-sm text-red-600">{error}</p>}
-
-        <button
-          type="submit"
-          disabled={pending}
-          className={`w-full rounded-xl px-4 py-2 font-medium border transition
-            ${pending ? "opacity-60 cursor-not-allowed" : "hover:shadow"}
-            bg-purple-600 text-white border-purple-600`}
+      <main className="min-h-screen flex items-center justify-center px-4">
+        <form
+          onSubmit={submit}
+          className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 p-8 space-y-6"
         >
-          {pending ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
-    </main>
+          <div>
+            <h1 className="text-3xl font-extrabold text-purple-900 text-center">
+              Admin Login
+            </h1>
+            <p className="text-gray-600 text-sm text-center mt-1">
+              Use your admin email and password.
+            </p>
+          </div>
+
+          {/* EMAIL */}
+          <label className="block text-sm font-semibold text-gray-700">
+            Email
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full mt-1 p-3 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-purple-400 outline-none"
+            />
+          </label>
+
+          {/* PASSWORD */}
+          <label className="block text-sm font-semibold text-gray-700">
+            Password
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full mt-1 p-3 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-purple-400 outline-none"
+            />
+          </label>
+
+          {/* ERROR MESSAGE */}
+          {error && (
+            <p className="text-red-600 text-sm text-center">{error}</p>
+          )}
+
+          {/* SUBMIT BUTTON */}
+          <button
+            type="submit"
+            disabled={pending}
+            className={`w-full py-2 rounded-full font-semibold 
+              bg-purple-300 border border-purple-400 text-purple-900
+              transition hover:shadow-md hover:-translate-y-1
+              ${pending ? "opacity-60 cursor-not-allowed hover:translate-y-0 hover:shadow-none" : ""}
+            `}
+          >
+            {pending ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+      </main>
+    </>
   );
 }
