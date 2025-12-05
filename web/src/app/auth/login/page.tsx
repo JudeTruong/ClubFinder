@@ -29,7 +29,9 @@ export default function LoginPage() {
       }
 
       localStorage.setItem("userId", data.userId);
-      router.push("/calendar");
+      setTimeout(() => {
+      window.location.href = "/calendar/my_calendar";
+    }, 700);
     } finally {
       setLoading(false);
     }

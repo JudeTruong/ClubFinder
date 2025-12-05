@@ -22,13 +22,20 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await r.json().catch(() => ({}));
+
       if (!r.ok) {
         const j = await r.json().catch(() => ({}));
         setError(j?.error ?? "Invalid credentials");
         return;
       }
+      if (data.userId) {
+        localStorage.setItem("userId", String(data.userId));
+      }
 
-      router.push("/");
+      setTimeout(() => {
+      window.location.href = "/";
+    }, 700);
       router.refresh();
     } finally {
       setPending(false);

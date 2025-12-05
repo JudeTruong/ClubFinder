@@ -48,7 +48,7 @@ export default function ClubManagementPage() {
       <div className="flex items-center justify-between">
       <h1 className="text-2xl font-bold text-blue-600">Club Management</h1>
         <Link
-          href="/events/new"
+          href="/event_timeline/new"
           className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-200"
         >
           + Create event
