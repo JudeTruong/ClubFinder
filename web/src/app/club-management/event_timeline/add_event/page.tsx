@@ -14,13 +14,11 @@ export default function NewEventPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // load clubs
     fetch("/api/clubs")
       .then((r) => r.json())
       .then((d) => setClubs(d || []))
       .catch(() => setClubs([]));
 
-    // load current user using HttpOnly cookie
     fetch("/api/me")
       .then((r) => r.json())
       .then((d) => setUser(d?.user ?? null))
@@ -32,29 +30,27 @@ export default function NewEventPage() {
     setMsg("");
 
     if (!user) {
-      setMsg("You must log in to post an event");
+      setMsg("You must log in to post an event.");
       return;
     }
 
-    const form = new FormData(e.currentTarget as HTMLFormElement);
-    const title = String(form.get("title") || "").trim();
-    const description = String(form.get("description") || "").trim();
-    const dateLocal = String(form.get("date") || "");
-    const location = String(form.get("location") || "").trim();
+    const form = new FormData(e.currentTarget);
+    const title = String(form.get("title")).trim();
+    const description = String(form.get("description")).trim();
+    const dateLocal = String(form.get("date"));
+    const location = String(form.get("location")).trim();
     const clubId = Number(form.get("clubId"));
     const imageUrl = String(form.get("imageUrl") || "").trim() || undefined;
 
     if (!title || !description || !dateLocal || !location || !clubId) {
-      setMsg("Fill all required fields");
+      setMsg("Fill all required fields.");
       return;
     }
-
-    const isoDate = new Date(dateLocal).toISOString();
 
     const payload = {
       title,
       description,
-      date: isoDate,
+      date: new Date(dateLocal).toISOString(),
       location,
       clubId,
       imageUrl,
@@ -72,75 +68,134 @@ export default function NewEventPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        setMsg(json.error || "Failed to create event");
+        setMsg(json.error || "Failed to create event.");
         setLoading(false);
         return;
       }
 
-      setMsg("Event posted");
-      // optional redirect to event page
-      if (json.id) router.push("/"); // ✅ redirect to /events/page.tsx
-    } catch (err) {
-      setMsg("Network error");
+      setMsg("Event posted successfully!");
+      if (json.id) router.push(`/club-management/event_timeline?clubId=${clubId}`);
+    } catch {
+      setMsg("Network error.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-800 p-8 flex flex-col items-center">
-      <h1 className="text-3xl font-bold mb-4">Post a Club Event</h1>
+    <>
+      {/* Soft Pastel Background */}
+      <style>{`
+        html, body {
+          background: linear-gradient(135deg, #eef0ff, #f7eaff, #e7f0ff);
+          background-attachment: fixed;
+        }
+      `}</style>
 
-      <form onSubmit={onSubmit} className="w-full max-w-2xl bg-white border rounded-xl p-6 shadow-sm grid gap-4">
-        <label className="grid gap-2">
-          <span className="font-medium">Club</span>
-          <select name="clubId" required className="border rounded-lg p-2">
-            <option value="">Select club</option>
-            {clubs.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
+      <main className="min-h-screen flex flex-col items-center px-6 py-12">
+        
+        {/* Page Title */}
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8">
+          Post a New Event
+        </h1>
 
-        <label className="grid gap-2">
-          <span className="font-medium">Title</span>
-          <input name="title" required className="border rounded-lg p-2" />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="font-medium">Description</span>
-          <textarea name="description" required className="border rounded-lg p-2 min-h-[120px]" />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="font-medium">Date and time</span>
-          <input type="datetime-local" name="date" required className="border rounded-lg p-2" />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="font-medium">Location</span>
-          <input name="location" required className="border rounded-lg p-2" />
-        </label>
-
-        <label className="grid gap-2">
-          <span className="font-medium">Image URL</span>
-          <input name="imageUrl" className="border rounded-lg p-2" placeholder="https://" />
-        </label>
-
-        <button
-          type="submit"
-          disabled={!user || loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+        {/* Form Card */}
+        <form
+          onSubmit={onSubmit}
+          className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 border border-gray-200 grid gap-6"
         >
-          {loading ? "Posting" : "Submit"}
-        </button>
+          {/* Club Select */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Club *</span>
+            <select
+              name="clubId"
+              required
+              className="border rounded-xl px-3 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            >
+              <option value="">Select a club</option>
+              {clubs.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <p className="text-sm text-gray-600">{user ? `Logged in as ${user.studentId}` : "Not logged in"}</p>
-        <p className="text-sm text-gray-600">{msg}</p>
-      </form>
-    </main>
+          {/* Title */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Title *</span>
+            <input
+              name="title"
+              required
+              className="border rounded-xl px-3 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </label>
+
+          {/* Description */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Description *</span>
+            <textarea
+              name="description"
+              required
+              className="border rounded-xl px-3 py-2 min-h-[140px] text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </label>
+
+          {/* Date */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Date & Time *</span>
+            <input
+              type="datetime-local"
+              name="date"
+              required
+              className="border rounded-xl px-3 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </label>
+
+          {/* Location */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Location *</span>
+            <input
+              name="location"
+              required
+              className="border rounded-xl px-3 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </label>
+
+          {/* Image */}
+          <label className="grid gap-1">
+            <span className="font-medium text-gray-800">Image URL</span>
+            <input
+              name="imageUrl"
+              placeholder="https://"
+              className="border rounded-xl px-3 py-2 text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </label>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={!user || loading}
+            className="bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {loading ? "Posting..." : "Submit Event"}
+          </button>
+
+          {/* Status Messages */}
+          <p className="text-sm text-gray-700">
+            {user ? `Logged in as ${user.studentId}` : "Not logged in"}
+          </p>
+          {msg && (
+            <p
+              className={`text-sm font-medium ${
+                msg.includes("success") ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {msg}
+            </p>
+          )}
+        </form>
+      </main>
+    </>
   );
 }
-
